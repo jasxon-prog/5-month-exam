@@ -6,19 +6,19 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ProductImage
-        fields = '__all__'
+        fields = ('images')
 
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Category
-        fields = "__all__"
+        fields = ("name", "image", "parent")
 
 class SalesmanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Salesman
-        fields = '__all__'
+        fields = "__all__"
 
 class ProductSerializer(serializers.ModelSerializer):
 

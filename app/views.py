@@ -4,6 +4,7 @@ from . import serializers
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from django.db.models import Sum
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class SalesmanListCreateAPIView(generics.ListCreateAPIView):
@@ -18,6 +19,8 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Category.objects.all()
     serializer_class = serializers.CategorySerializer
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ('category')
 
 
 class ProductImageListCreateAPIView(generics.ListCreateAPIView):

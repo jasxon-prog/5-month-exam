@@ -3,6 +3,7 @@ from django.db import models
 PRODUCT_TYPE = [
     ('docs', ".docs"),
     ('pptx', ".pptx"),
+    ('pdf', ".pdf")
 ]
 
 MATERIAL_TYPE = [
@@ -28,22 +29,43 @@ class ProductImage(BaseModel):
 class Category(BaseModel):  
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='category_images/')
+    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True, related_name="childrens/")
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(BaseModel):
+    title = models.CharField(max_length=200)
 
 
 class Salesman(BaseModel):  
-    name = models.CharField(max_length=255)
-    total_sell_product = models.ManyToManyField("Product")
-    income = models.IntegerField()
+    full_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="seller_image", null=True, blank=True)
+    backgroud_image = models.ImageField(upload_to="media/Seller_backgroud_image",null=True,blank=True)
+    sold_products_count = models.ManyToManyField("Product")
+    total_income = models.IntegerField()
+    last_active = models.DateTimeField(null=True)
     material = models.CharField(max_length=255, choices=MATERIAL_TYPE)
+
+    def __str__(self):
+        return self.full_name
 
 
 class Product(BaseModel):  
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(Salesman, on_delete=models.CASCADE) 
-    image = models.ManyToManyField(ProductImage)  
+    seller = models.ForeignKey(Salesman, on_delete=models.CASCADE, related_name="products/") 
+    images = models.ManyToManyField(ProductImage)  
     price = models.IntegerField()
-    pages_count = models.IntegerField()
-    size = models.FloatField()
-    type = models.CharField(max_length=20, choices=PRODUCT_TYPE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    description = models.TextField()
+    pages = models.IntegerField()
+    file_size = models.FloatField()
+    file_type = models.CharField(max_length=20, choices=PRODUCT_TYPE)
+    file = models.FileField(upload_to="products/")
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    poster = models.ImageField(upload_to="product_poster/")
+    tags = models.ManyToManyField(Tag)
+    body = models.TextField()
+    view_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title

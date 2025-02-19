@@ -29,7 +29,7 @@ class ProductImage(BaseModel):
 class Category(BaseModel):  
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='category_images/')
-    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True, related_name="childrens/")
+    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True, related_name="childrens")
 
     def __str__(self):
         return self.name
@@ -54,17 +54,17 @@ class Salesman(BaseModel):
 
 class Product(BaseModel):  
     title = models.CharField(max_length=255)
-    seller = models.ForeignKey(Salesman, on_delete=models.CASCADE, related_name="products/") 
+    seller = models.ForeignKey(Salesman, on_delete=models.CASCADE, related_name="products", default=0) 
     images = models.ManyToManyField(ProductImage)  
     price = models.IntegerField()
     pages = models.IntegerField()
     file_size = models.FloatField()
-    file_type = models.CharField(max_length=20, choices=PRODUCT_TYPE)
-    file = models.FileField(upload_to="products/")
+    file_type = models.CharField(max_length=20, choices=PRODUCT_TYPE, null=True)
+    file = models.FileField(null=True, upload_to="products/")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    poster = models.ImageField(upload_to="product_poster/")
+    poster = models.ImageField(upload_to="product_poster/", null=True)
     tags = models.ManyToManyField(Tag)
-    body = models.TextField()
+    body = models.TextField(null=True)
     view_count = models.IntegerField(default=0)
 
     def __str__(self):

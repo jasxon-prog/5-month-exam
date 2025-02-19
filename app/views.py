@@ -19,6 +19,8 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Category.objects.all()
     serializer_class = serializers.CategorySerializer
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ('category',)
 
 
 class ProductImageListCreateAPIView(generics.ListCreateAPIView):
@@ -28,6 +30,7 @@ class ProductImageListCreateAPIView(generics.ListCreateAPIView):
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Product.objects.all()
-    serializer_class = serializers.ProductSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('category',)
+    permission_classes = [AllowAny]
+
+    def get_serializer_class(self):
+        return serializers.ProductSerializer if self.request.method == 'POST' else serializers.ProductListSerializer

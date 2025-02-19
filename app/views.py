@@ -12,15 +12,13 @@ class SalesmanListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.SalesmanSerializer
     permission_classes = [AllowAny]  
 
-    data = models.Salesman.objects.aggregate(total=Sum('total_sell_product'))['total'] or 0
+    data = models.Salesman.objects.aggregate(total=Sum('sold_products_count'))['total'] or 0
 
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Category.objects.all()
     serializer_class = serializers.CategorySerializer
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('category')
 
 
 class ProductImageListCreateAPIView(generics.ListCreateAPIView):
@@ -31,3 +29,5 @@ class ProductImageListCreateAPIView(generics.ListCreateAPIView):
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ('category',)
